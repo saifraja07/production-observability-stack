@@ -1,0 +1,43 @@
+# Alertmanager 0.28 example configuration.
+# Alertmanager does NOT expand environment variables in its config file.
+# The SMTP password is therefore read from a file (smtp_auth_password_file),
+# which docs/security.md shows how to create from an env var or secret store.
+global:
+  smtp_smarthost: "smtp.example.com:587"       # CHANGE
+  smtp_from: "alertmanager@example.com"        # CHANGE
+  smtp_auth_username: "replace_me"             # CHANGE
+  smtp_auth_password_file: "/etc/alertmanager/secrets/smtp_password"  # mode 0400, owner alertmanager
+  smtp_require_tls: true
+
+route:
+  receiver: ops-email
+  group_by: ["alertname", "job"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - matchers:
+        - 'severity="critical"'
+      receiver: ops-email-and-webhook
+      repeat_interval: 1h
+
+receivers:
+  - name: ops-email
+    email_configs:
+      - to: "oncall@example.com"               # CHANGE
+        send_resolved: true
+
+  - name: ops-email-and-webhook
+    email_configs:
+      - to: "oncall@example.com"               # CHANGE
+        send_resolved: true
+    webhook_configs:
+      - url: "http://127.0.0.1:5001/alertmanager-webhook"   # CHANGE: your webhook receiver
+        send_resolved: true
+
+inhibit_rules:
+  - source_matchers:
+      - 'severity="critical"'
+    target_matchers:
+      - 'severity="warning"'
+    equal: ["alertname", "job"]

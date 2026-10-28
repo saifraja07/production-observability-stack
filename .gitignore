@@ -1,0 +1,47 @@
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+credentials*
+secrets/
+smtp_password
+
+# Logs and local state
+*.log
+logs/
+*.log.gz
+data/
+wal/
+*.db
+
+# Node
+node_modules/
+npm-debug.log*
+.npm/
+
+# Generated artifacts
+*.zip
+*.tar.gz
+dist/
+build/
+tmp/
+.tmp/
+
+# Grafana exports / local dumps
+grafana-export*.json
+*.sqlite
+*.sqlite3
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

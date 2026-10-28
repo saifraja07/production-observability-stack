@@ -62,6 +62,22 @@ This is a conceptual diagram. The actual data paths and alerting integrations de
 - **Logrotate:** rotation of local application log files.
 - **Cloudflare R2:** optional object storage for Loki.
 
+## Versions
+
+The configuration files were syntax-checked with the official validators of these releases:
+
+| Component | Version | Validator |
+|---|---|---|
+| Prometheus | 3.15.1 | `promtool check config` / `check rules` |
+| Alertmanager | 0.34.1 | `amtool check-config` |
+| Loki | 3.7.9 | `loki -verify-config` |
+| Grafana Alloy | 1.21.2 | `alloy validate` |
+| Tempo | 2.8.2 | `tempo -config.verify=true` |
+
+The Tempo configuration uses the 2.x layout (`ingester`, `compactor`) and is **rejected by Tempo 3.x**, which replaced those blocks. Use a 2.x release, or adapt the file to the 3.x configuration reference.
+
+These are syntax checks only. Retention behaviour, storage permissions and alert delivery still need testing on your own host (see [Validation](#validation)).
+
 ## Repository structure
 
 ```text
@@ -83,11 +99,21 @@ production-observability-stack/
 │   ├── tempo/
 │   │   └── config.yml
 │   └── logrotate/
-│       └── storageapp
+│       └── example-api
 ├── examples/
 │   └── node-api/
 │       ├── package.json
+│       ├── package-lock.json
 │       ├── server.js
+│       ├── observability/
+│       │   ├── logger.js
+│       │   ├── metrics.js
+│       │   ├── tracing.js
+│       │   └── tracing-loader.js
+│       ├── routes/
+│       │   └── itemRoutes.js
+│       ├── controllers/
+│       │   └── itemController.js
 │       └── README.md
 ├── scripts/
 │   ├── validate-configs.sh

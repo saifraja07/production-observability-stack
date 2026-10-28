@@ -1,0 +1,13 @@
+# Install as /etc/logrotate.d/example-api (CHANGE paths and user/group to match your host)
+/var/log/example-api/*.log {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    # copytruncate avoids needing the app to reopen files. Trade-off: a few lines
+    # written during the copy can be lost. Prefer app-side rotation for strict needs.
+    copytruncate
+    create 0640 exampleapi exampleapi
+}
